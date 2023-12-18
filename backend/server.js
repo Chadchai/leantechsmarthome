@@ -9,6 +9,12 @@ const app = express();
 
 // Use middleware to parse JSON requests
 app.use(express.json());
+const http = require('http');
+const server = http.createServer(app);
+
+const path = require('path');
+app.use(express.static(path.join(__dirname + '/build')));
+
 
 // Enable CORS (Cross-Origin Resource Sharing)
 app.use(cors());
@@ -17,12 +23,11 @@ const context = new TuyaContext({
     accessKey: process.env.ACCESS_KEY,
     secretKey: process.env.SECRET_KEY,
 });
-console.log("key " + process.env.SECRET_KEY);
 
 const db = mysql.createConnection({
-    host:'aws.connect.psdb.cloud',
-    user: '75dri8sjjlgoheo82x5j',
-    password:'pscale_pw_r05pdHAEM9AsVvolFVGJRmSf6fIXxmvr8QTuxc7BHQ5',
+    host: process.env.HOST_NAME,
+    user: process.env.USER_NAME,
+    password: process.env.MSQL_PWD,
     database : 'leantech',
     ssl: {"rejectUnauthorized":true}
 });
@@ -44,7 +49,7 @@ const controldevice = async (type,code,deviceId,remoteId,currentstatus) => {
    if(!devicedetail.success) {
      new Error();
    }
-   //console.log("Device details:",devicedetail);
+   console.log("Device details:",code);
  // Send commands
 //console.log(type);
  if (type ==="air" ) {
@@ -54,14 +59,14 @@ const controldevice = async (type,code,deviceId,remoteId,currentstatus) => {
      method: 'POST',
      body: {
          "categoryId": 5,
-         "key": code
+         "key": "powerOn"
       }
    });
    if(!commands.success) {
      new Error();
    }
    updateStatus(commands.result,remoteId,deviceId,code,currentstatus);
-   console.log("Execution result:",commands);
+  // console.log("Execution result:",commands);
  } else if (type ==="tv") {
    const commands = await context.request({
      //path: `/v1.0/iot-03/devices/${remote_id}/commands`,
@@ -77,7 +82,7 @@ const controldevice = async (type,code,deviceId,remoteId,currentstatus) => {
    }
    
    updateStatus(commands.result,remoteId,deviceId,code,currentstatus);
-   console.log("Execution result:",commands.result);
+  // console.log("Execution result:",commands.result);
  }
  
  else {
@@ -92,16 +97,20 @@ const controldevice = async (type,code,deviceId,remoteId,currentstatus) => {
      new Error();
    }
    updateStatus(commands.result,remoteId,deviceId,code,currentstatus);
-   console.log("Execution result:",commands);
+   //console.log("Execution result:",commands);
  } 
-
  };
 
+ async function getstatus(deviceid) {
+
+
+ } 
+
+ 
  function updateStatus(result,remoteId,deviceId,code,currentstatus) {
   // console.log("current status " + currentstatus);
    if (result === true) {
      let updatestatus;
-     
      if (remoteId !== "noremote" ) {
        if (currentstatus == 1) {
          updatestatus = "UPDATE device_list SET device_status = 0  WHERE remote_id ='" + remoteId + "'"; 
@@ -121,16 +130,17 @@ const controldevice = async (type,code,deviceId,remoteId,currentstatus) => {
      }
   //console.log( updatestatus);
        db.query(updatestatus, (err, result) => {
- return result
-      
+  return result
+
      });
    }
  }
-
 // Define a simple route that responds with a JSON object
-app.get('/api/data', (req, res) => {
-    let getbuttonlist= "SELECT * FROM device_list ORDER BY order_id"  ;
-
+app.get('/api/data/:zoneid', (req, res) => {
+   
+let zoneid = req.params.zoneid;
+let getbuttonlist= "SELECT * FROM device_list WHERE zone_id ="+ zoneid+ " ORDER BY order_id"  ;
+//console.log(getbuttonlist);
     db.query(getbuttonlist, (err, result) => {
        // res.send(JSON.stringify(temp1));
         res.json(result);
@@ -138,7 +148,30 @@ app.get('/api/data', (req, res) => {
   })
 
 });
-app.post('/smarthome/control/:deviceId/:remoteId/:type/:code/:currentstatus', (req, res) => {
+app.get('/zonelist', (req, res) => {
+   
+  let getzonelist= "SELECT * FROM zone_list "  ;
+  //console.log(getbuttonlist);
+      db.query(getzonelist, (err, result) => {
+         // res.send(JSON.stringify(temp1));
+          res.json(result);
+        //  console.log(result);
+    })
+  
+  });
+
+  app.get('/getstatus/:deviceid', async (req, res) => {
+    let deviceid = req.params.deviceid;
+    const commands = await context.request({
+      //  path: ` /v2.0/infrareds/eb1044ef635258e664492y}/remotes`,
+      path: "/v1.0/devices/"+deviceid +"/status",
+       method: 'GET',
+     });
+  console.log(commands.result);
+    res.send(commands.result);
+    });
+  
+app.post('/smarthome/control/:deviceId/:remoteId/:type/:code/:currentstatus', async (req, res) => {
   let getbuttonlist= "SELECT * FROM device_list ORDER BY order_id"  ;
 
   let deviceId =  req.params.deviceId;
@@ -149,14 +182,28 @@ app.post('/smarthome/control/:deviceId/:remoteId/:type/:code/:currentstatus', (r
  if (type === "plug" || type === "breaker") {
   code = (code === "true"); 
  }
+ //console.log(currentstatus);
+try {
+  const response1 = await controldevice(type,code,deviceId,remoteId,currentstatus);
+  res.send(response1);
+} catch (error) {
+  console.error('Error fetching data:', error);
+} 
 
 
-
-controldevice(type,code,deviceId,remoteId,currentstatus);
-console.log(currentstatus);
 
 });
 
+app.get('/', function (req, res) { 
+  res.header('Access-Control-Allow-Origin', '*');
+ res.sendFile(path.join(__dirname + '/build/index.html'),
+function (err) {
+if (err) {
+ res.status(500).send(err);
+}
+}
+);
+});
 
 // Define the port for the server to listen on
 const PORT = process.env.PORT || 3001;

@@ -24,7 +24,10 @@ import Menu from '@mui/material/Menu';
 import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useMediaQuery } from 'react-responsive';
-
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import HomeWorkIcon from '@mui/icons-material/HomeWork';
+import CameraIndoorIcon from '@mui/icons-material/CameraIndoor';
+import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -157,8 +160,8 @@ export default function PersistentDrawerLeft() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+                 <MenuItem onClick={handleClose}>บัญชีของฉัน</MenuItem>
+                <MenuItem onClick={handleClose}>ออกจากระบบ</MenuItem>
               </Menu>
               
             </div>
@@ -172,6 +175,8 @@ export default function PersistentDrawerLeft() {
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
+            backgroundColor:'#3081D0',
+            color:'white',
           },
         }}
         variant="persistent"
@@ -179,36 +184,49 @@ export default function PersistentDrawerLeft() {
         open={open}
       >
         <DrawerHeader>
+          Leantech Smart System
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
-          {['Check In/Out', 'House Status', 'House Setting', 'Alert'].map((text, index) => (
-            <ListItem key={text} disablePadding>
+          {/* {['เช็คอิน/เช็คเอ้าท์', 'ดูสถานะบ้าน', 'การแจ้งเตือน'].map((text, index) => ( */}
+            <ListItem key='เช็คอิน/เช็คเอ้าท์' disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <HomeWorkIcon />
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary='เช็คอิน/เช็คเอ้าท์' />
               </ListItemButton>
             </ListItem>
-          ))}
+            <ListItem key='ดูสถานะบ้าน' disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                <CameraIndoorIcon/>
+                </ListItemIcon>
+                <ListItemText primary='ดูสถานะบ้าน' />
+              </ListItemButton>
+            </ListItem>
+            <ListItem key='การแจ้งเตือน' disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                <NotificationsActiveIcon/>
+                </ListItemIcon>
+                <ListItemText primary='การแจ้งเตือน' />
+              </ListItemButton>
+            </ListItem>
+            <ListItem key='ความพึงพอใจ' disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                <SentimentSatisfiedAltIcon/>
+                </ListItemIcon>
+                <ListItemText primary='ความพึงพอใจ' />
+              </ListItemButton>
+            </ListItem>
         </List>
         <Divider />
-        <List>
-          {['Add'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+     
       </Drawer>
       
     </Box>
