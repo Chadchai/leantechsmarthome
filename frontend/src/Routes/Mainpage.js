@@ -5,7 +5,8 @@ import Appbar from '../components/appbar1';
 import axios from 'axios';
 import Grid from '@mui/material/Grid';
 import Footer from '../components/Footer';
-function Homestatus() {
+import Homebutton from '../components/Homebutton';
+function Mainpage() {
   const [zonelist, setZonelist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,19 +38,35 @@ function Homestatus() {
   }
 
   return (
-    <div className="App">
+    <div className="App" style={{justifyContent:'right'}}>
          <Appbar/>
       <header className="App-header">
-    
-      <Grid container spacing={2} sx={{minHeight:'500px',marginY:'20px'}}>
-      {zonelist?.map(item => (
-          
-          <Grid  key={item.zone_id} item xs={12} sm={6} md={4} >
-        <Buton zoneid ={item.zone_id} zonename={item.zone_name}/>
+      <Grid container spacing={2}  
+       sx={{color:'white',
+        '--Grid-borderWidth': '1px',
+        borderTop: 'var(--Grid-borderWidth) solid',
+        borderLeft: 'var(--Grid-borderWidth) solid',
+        borderColor: 'divider',
+        '& > div': {
+          borderRight: 'var(--Grid-borderWidth) solid',
+          borderBottom: 'var(--Grid-borderWidth) solid',
+          borderColor: 'divider',
+        },
+      }}
+      >
+        <Grid item xs={12} sm={6} md={3}>
+        <Homebutton image='./checkin.png' name='เช็คอิน/เช็คเอ้าท์'/>
         </Grid>
-      ))}
-     </Grid>
-   
+        <Grid item xs={12} sm={6} md={3}>
+        <Homebutton image='./homestatus.png' name='ดูสถานะบ้าน' />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+        <Homebutton image='./satisfaction.png' name='ความพึงพอใจ'/>
+        </Grid>
+       
+      </Grid>
+    
+
       </header>
       <Footer/>
    
@@ -57,4 +74,4 @@ function Homestatus() {
   );
 }
 
-export default Homestatus;
+export default Mainpage;

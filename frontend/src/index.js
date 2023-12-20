@@ -4,7 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createTheme,ThemeProvider } from '@mui/material/styles';
-
+import { BrowserRouter,Routes, Route,HashRouter } from "react-router-dom";
+import HomeStatus from './Routes/HomeStatus';
+import Mainpage from './Routes/Mainpage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const theme = createTheme({
@@ -28,8 +30,14 @@ const theme = createTheme({
 });
 root.render(
   <ThemeProvider theme={theme}>
+  
   <React.StrictMode>
-    <App />
+  <BrowserRouter>
+      <Routes >
+      <Route exact path="/" element={<Mainpage/>} />
+        <Route path="/status" element={<HomeStatus/>} />
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>
   </ThemeProvider>
 );

@@ -6,10 +6,7 @@ import { Typography, Container, Grid, CardMedia } from '@mui/material';
 const FooterContainer = styled('footer')({
   padding: '20px',
   marginTop: 'auto',
-  backgroundColor: (theme) =>
-    theme.palette.type === 'light'
-      ? theme.palette.grey[200]
-      : theme.palette.grey[800],
+  backgroundColor: '#282c34',
 });
 
 const Footer = () => {
@@ -28,12 +25,12 @@ const Footer = () => {
             />
             </Grid>  
             <Grid item xs={12} sm={6}>
-            <Typography variant="h6" align="center">
+            <Typography variant="h6" align="center" color={'white'}>
                     LEANTECH SMART GUESTHOUSE SYSTEMS 
                     </Typography>
             </Grid>
             <Grid item xs={12} sm={3}>
-            <Typography variant="้h6" align="center">
+            <Typography variant="้h6" align="center" color={'white'}>
                 โทร: 095-438-5862 
              </Typography>
             </Grid> 

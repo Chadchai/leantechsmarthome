@@ -115,6 +115,7 @@ export default function PersistentDrawerLeft() {
             sx={{ mr: 2, ...(open && { display: 'none' }) }}
           >
             <MenuIcon />
+            
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           {isMobile ? <h4>LTMS</h4> : <h2>LEANTECH SMART GUESTHOUSE SYSTEMS</h2>}
