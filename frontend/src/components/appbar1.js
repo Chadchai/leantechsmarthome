@@ -28,6 +28,7 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import CameraIndoorIcon from '@mui/icons-material/CameraIndoor';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
+import { Link } from 'react-router-dom';
 const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -201,6 +202,8 @@ export default function PersistentDrawerLeft() {
                 <ListItemText primary='เช็คอิน/เช็คเอ้าท์' />
               </ListItemButton>
             </ListItem>
+            <Link to="/status">
+    
             <ListItem key='ดูสถานะบ้าน' disablePadding>
               <ListItemButton>
                 <ListItemIcon>
@@ -209,6 +212,8 @@ export default function PersistentDrawerLeft() {
                 <ListItemText primary='ดูสถานะบ้าน' />
               </ListItemButton>
             </ListItem>
+     
+            </Link>
             <ListItem key='การแจ้งเตือน' disablePadding>
               <ListItemButton>
                 <ListItemIcon>

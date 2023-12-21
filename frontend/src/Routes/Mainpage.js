@@ -6,6 +6,7 @@ import axios from 'axios';
 import Grid from '@mui/material/Grid';
 import Footer from '../components/Footer';
 import Homebutton from '../components/Homebutton';
+import { Link } from 'react-router-dom';
 function Mainpage() {
   const [zonelist, setZonelist] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -57,9 +58,13 @@ function Mainpage() {
         <Grid item xs={12} sm={6} md={3}>
         <Homebutton image='./checkin.png' name='เช็คอิน/เช็คเอ้าท์'/>
         </Grid>
+       
         <Grid item xs={12} sm={6} md={3}>
+        <Link to="/status">
         <Homebutton image='./homestatus.png' name='ดูสถานะบ้าน' />
+        </Link>
         </Grid>
+       
         <Grid item xs={12} sm={6} md={3}>
         <Homebutton image='./satisfaction.png' name='ความพึงพอใจ'/>
         </Grid>
