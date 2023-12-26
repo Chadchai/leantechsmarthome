@@ -7,6 +7,8 @@ import { createTheme,ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter,Routes, Route,HashRouter } from "react-router-dom";
 import HomeStatus from './Routes/HomeStatus';
 import Mainpage from './Routes/Mainpage';
+import Login from './Routes/Login';
+import CheckIn from './Routes/CheckIn'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const theme = createTheme({
@@ -36,6 +38,8 @@ root.render(
       <Routes >
       <Route exact path="/" element={<Mainpage/>} />
         <Route path="/status" element={<HomeStatus/>} />
+        <Route path="/signin" element={<Login />} />
+        <Route path="/checkin" element={<CheckIn/>} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

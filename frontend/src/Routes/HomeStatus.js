@@ -9,11 +9,18 @@ function Homestatus() {
   const [zonelist, setZonelist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [dataFromChild, setDataFromChild] = useState(false);
+  
+  const handleChildData = (childData) => {
+    // Update the state in the parent component with the data from the child
+    setDataFromChild(childData);
+    console.log(childData);
+  };
 
   const fetchData = async () => {
     try {
       // Make a GET request to your API endpoint
-      console.log('http://localhost:3001/zonelist');
+      //console.log('http://localhost:3001/zonelist');
       const response = await axios.get('https://leantechsmarthome-0db22cab28f1.herokuapp.com/zonelist');
       // Set the data in the state
       setZonelist(response.data);
@@ -37,9 +44,9 @@ function Homestatus() {
   }
 
   return (
-    <div className="App">
-         <Appbar/>
-      <header className="App-header">
+    <div className="App" >
+      <Appbar onDataFromChild={handleChildData} />
+      <header className="App-header" >
     
       <Grid container spacing={2} sx={{minHeight:'500px',marginY:'20px'}}>
       {zonelist?.map(item => (

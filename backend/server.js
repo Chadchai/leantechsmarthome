@@ -6,15 +6,19 @@ const TuyaContext = require("@tuya/tuya-connector-nodejs").TuyaContext;
 const dotenv = require('dotenv').config();
 // Create an Express application
 const app = express();
-
+const bodyParser = require('body-parser');
 // Use middleware to parse JSON requests
-app.use(express.json());
+var fileupload = require("express-fileupload");
 const http = require('http');
 const server = http.createServer(app);
 
 const path = require('path');
 app.use(express.static(path.join(__dirname + '/build')));
+app.use(fileupload());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
+const jwt = require("jwt-simple");
 
 // Enable CORS (Cross-Origin Resource Sharing)
 app.use(cors());
@@ -148,6 +152,17 @@ let getbuttonlist= "SELECT * FROM device_list WHERE zone_id ="+ zoneid+ " ORDER 
   })
 
 });
+app.get('/api/getguestlist', (req, res) => {
+   
+  let getguestlist= "SELECT * ,DATE_FORMAT(checkin_date, '%d-%m-%Y %H:%I:%S') AS checkin_date,DATE_FORMAT(checkout_date, '%d-%m-%Y %H:%I:%S') AS checkout_date FROM guest_list ORDER BY checkin_id"  ;
+  //console.log(getbuttonlist);
+      db.query(getguestlist, (err, result) => {
+         // res.send(JSON.stringify(temp1));
+          res.json(result);
+        //  console.log(result);
+    })
+  
+  });
 app.get('/zonelist', (req, res) => {
    
   let getzonelist= "SELECT * FROM zone_list "  ;
@@ -189,12 +204,53 @@ try {
 } catch (error) {
   console.error('Error fetching data:', error);
 } 
-
-
-
 });
 
-app.get('/', function (req, res) { 
+app.post('/checkuser', async (req, res) => {
+    let username = req.body.user_name;
+    let password = req.body.user_pwd;
+    let checkpwd = "SELECT * FROM `user_list` WHERE user_name ='" + username + "' AND password ='" + password + "'";
+    var today = new Date();
+    var c_date = today.getDate();
+    var c_month = today.getMonth()+1;
+    var c_year = today.getFullYear();
+    var c_time = today.getTime();
+    var date1 = c_year.toString() + "-" + c_month.toString() + "-" +c_date.toString() ;
+  
+    let updatelogin = "UPDATE user_list SET last_login = '" + date1 + "' WHERE user_name ='" + username + "'";
+   
+    //console.log(checkpwd);
+    db.query(checkpwd, (err, result) => {
+      if (err) {
+          return res.status(500).send(err);
+      } else if (result =="" || result == null )  {
+        res.send({alert: "username or password ไม่ถูกต้อง",token:"Incorrect"});
+        
+        } else {
+  
+          const payload = {
+            id: username,
+            id1: result[0].id,
+          
+            iat: new Date().getTime(),//มาจากคำว่า issued at time (สร้างเมื่อ),
+            exp: new Date().getTime() + (4*60*60*1000),
+         };
+         const SECRET = process.env.JWT_KEY; //ในการใช้งานจริง คีย์นี้ให้เก็บเป็นความลับ
+      var token = jwt.encode(payload, SECRET);
+      db.query(updatelogin , (err, result1) => {
+        if (err) {
+            return res.status(500).send(err);
+        } else {
+          res.send({token:token,user_name:username});
+       }
+      });
+
+         
+        } 
+  });
+});
+app.use(express.static(path.join(__dirname + '/build')));
+app.use('/*', function (req, res) { 
   res.header('Access-Control-Allow-Origin', '*');
  res.sendFile(path.join(__dirname + '/build/index.html'),
 function (err) {

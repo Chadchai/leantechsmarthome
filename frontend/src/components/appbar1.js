@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -76,31 +76,48 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-export default function PersistentDrawerLeft() {
+const Navbar = ({ onDataFromChild }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [auth, setAuth] = React.useState(true);
+  const [auth, setAuth] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [username, setUsername] = React.useState(null);
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
-  const handleChange = (event) => {
-    setAuth(true);
-  };
+  useEffect(() => {
+    const token = localStorage.getItem('mytoken');
+    const username = localStorage.getItem('username');
+    if (token) {
+      setAuth(true);
+      setUsername(username);
+    } else {
+      setAuth(false);
+      window.location.href = '/signin';
+    }
+  }, []);
+
+ 
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
+    localStorage.clear();
     setAnchorEl(null);
   };
 
   const handleDrawerOpen = () => {
     setOpen(true);
+    onDataFromChild(true);
+  // console.log("Door open");
   };
 
   const handleDrawerClose = () => {
     setOpen(false);
+    onDataFromChild(false);
+  // console.log("Door close");
+   
   };
 
   return (
@@ -133,9 +150,9 @@ export default function PersistentDrawerLeft() {
             <Badge badgeContent={17} color="error">
                 <NotificationsIcon />
             </Badge>
+         
             </IconButton>
-       
-     
+
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -145,6 +162,9 @@ export default function PersistentDrawerLeft() {
                 color="inherit"
               >
                 <AccountCircle />
+                <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1 }}>
+            {username}
+            </Typography>
               </IconButton>
            
               <Menu
@@ -163,7 +183,11 @@ export default function PersistentDrawerLeft() {
                 onClose={handleClose}
               >
                  <MenuItem onClick={handleClose}>บัญชีของฉัน</MenuItem>
-                <MenuItem onClick={handleClose}>ออกจากระบบ</MenuItem>
+                 <Link to="/Signin">
+                <MenuItem onClick={handleClose}>
+                  ออกจากระบบ
+                </MenuItem>
+                </Link>
               </Menu>
               
             </div>
@@ -202,8 +226,8 @@ export default function PersistentDrawerLeft() {
                 <ListItemText primary='เช็คอิน/เช็คเอ้าท์' />
               </ListItemButton>
             </ListItem>
+            
             <Link to="/status">
-    
             <ListItem key='ดูสถานะบ้าน' disablePadding>
               <ListItemButton>
                 <ListItemIcon>
@@ -212,8 +236,8 @@ export default function PersistentDrawerLeft() {
                 <ListItemText primary='ดูสถานะบ้าน' />
               </ListItemButton>
             </ListItem>
-     
             </Link>
+
             <ListItem key='การแจ้งเตือน' disablePadding>
               <ListItemButton>
                 <ListItemIcon>
@@ -238,3 +262,4 @@ export default function PersistentDrawerLeft() {
     </Box>
   );
 }
+export default Navbar

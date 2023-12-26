@@ -3,6 +3,7 @@ import React from 'react';
 import { styled } from '@mui/system';
 import { Typography, Container, Grid, CardMedia } from '@mui/material';
 
+
 const FooterContainer = styled('footer')({
   padding: '20px',
   marginTop: 'auto',
@@ -19,18 +20,18 @@ const Footer = () => {
             <CardMedia
                component="img"
                alt="green iguana"
-               sx={{ width: 200 }}
+               sx={{ width: 150 }}
                 image="./leantechlogo.png"
                
             />
             </Grid>  
             <Grid item xs={12} sm={6}>
-            <Typography variant="h6" align="center" color={'white'}>
+            <Typography variant="subtitle1" align="center" color={'white'}>
                     LEANTECH SMART GUESTHOUSE SYSTEMS 
                     </Typography>
             </Grid>
             <Grid item xs={12} sm={3}>
-            <Typography variant="้h6" align="center" color={'white'}>
+            <Typography variant="subtitle1" align="center" color={'white'}>
                 โทร: 095-438-5862 
              </Typography>
             </Grid> 
